@@ -1,11 +1,10 @@
 const { default: axios } = require("axios");
-
 /*
   STEP 1: using axios, send a GET request to the following URL
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
-axios.get("https://api.github.com/users/kevinstonge").then(r=>console.log(r)).catch(err=>console.log(err))
+["kevinstonge","tetondan","dustinmyers","justsml","luishrd","bigknell"].forEach(user=>axios.get(`https://api.github.com/users/${user}`).then(r=>updateCards(r)).catch(err=>console.log(err)))
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
     github info! You will need to understand the structure of this
@@ -13,7 +12,46 @@ axios.get("https://api.github.com/users/kevinstonge").then(r=>console.log(r)).ca
 
     Skip to STEP 3.
 */
+function updateCards(newCard) {
+  document.querySelector('.cards').appendChild(buildCard(newCard.data))
+}
 
+function buildCard(data) {
+  console.log(data)
+  const card = document.createElement('div')
+  card.classList.add("card")
+  const img = document.createElement('img')
+  img.src = data.avatar_url
+  card.appendChild(img)
+  const cardInfo = document.createElement('div')
+  cardInfo.classList.add('card-info')
+  card.appendChild(cardInfo)
+  const name = document.createElement('h3')
+  name.innerText = data.name
+  name.classList.add('name')
+  cardInfo.appendChild(name)
+  const username = document.createElement('p')
+  username.classList.add('username')
+  username.innerText = data.login
+  cardInfo.appendChild(username)
+  const location = document.createElement('p')
+  location.innerText = `Location: ${data.location}`
+  cardInfo.appendChild(location)
+  const profile = document.createElement('p')
+  profile.innerText = "Profile: "
+  const profileLink = document.createElement('a')
+  profileLink.href=data.html_url
+  profileLink.innerText=data.html_url
+  profile.appendChild(profileLink)
+  cardInfo.appendChild(profile)
+  const followers = document.createElement('p')
+  followers.innerText = `Followers: ${data.followers}`
+  cardInfo.appendChild(followers)
+  const following = document.createElement('p')
+  following.innerText = `Following: ${data.following}`
+  cardInfo.appendChild(following)
+  return card
+}
 /*
   STEP 4: Pass the data received from Github into your function,
     and append the returned markup to the DOM as a child of .cards
