@@ -4,7 +4,11 @@ const { default: axios } = require("axios");
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
-["kevinstonge","tetondan","dustinmyers","justsml","luishrd","bigknell"].forEach(user=>axios.get(`https://api.github.com/users/${user}`).then(r=>updateCards(r)).catch(err=>console.log(err)))
+function newCard(username) {
+  axios.get(`https://api.github.com/users/${username}`).then(r=>updateCards(r)).catch(err=>console.log(err));
+}
+newCard('kevinstonge');
+
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
     github info! You will need to understand the structure of this
@@ -13,44 +17,43 @@ const { default: axios } = require("axios");
     Skip to STEP 3.
 */
 function updateCards(newCard) {
-  document.querySelector('.cards').appendChild(buildCard(newCard.data))
+  document.querySelector('.cards').appendChild(buildCard(newCard.data));
 }
 
 function buildCard(data) {
-  console.log(data)
-  const card = document.createElement('div')
-  card.classList.add("card")
-  const img = document.createElement('img')
-  img.src = data.avatar_url
-  card.appendChild(img)
-  const cardInfo = document.createElement('div')
-  cardInfo.classList.add('card-info')
-  card.appendChild(cardInfo)
-  const name = document.createElement('h3')
-  name.innerText = data.name
-  name.classList.add('name')
-  cardInfo.appendChild(name)
-  const username = document.createElement('p')
-  username.classList.add('username')
-  username.innerText = data.login
-  cardInfo.appendChild(username)
-  const location = document.createElement('p')
-  location.innerText = `Location: ${data.location}`
-  cardInfo.appendChild(location)
-  const profile = document.createElement('p')
-  profile.innerText = "Profile: "
-  const profileLink = document.createElement('a')
-  profileLink.href=data.html_url
-  profileLink.innerText=data.html_url
-  profile.appendChild(profileLink)
-  cardInfo.appendChild(profile)
-  const followers = document.createElement('p')
-  followers.innerText = `Followers: ${data.followers}`
-  cardInfo.appendChild(followers)
-  const following = document.createElement('p')
-  following.innerText = `Following: ${data.following}`
-  cardInfo.appendChild(following)
-  return card
+  const card = document.createElement('div');
+  card.classList.add("card");
+  const img = document.createElement('img');
+  img.src = data.avatar_url;
+  card.appendChild(img);
+  const cardInfo = document.createElement('div');
+  cardInfo.classList.add('card-info');
+  card.appendChild(cardInfo);
+  const name = document.createElement('h3');
+  name.innerText = data.name;
+  name.classList.add('name');
+  cardInfo.appendChild(name);
+  const username = document.createElement('p');
+  username.classList.add('username');
+  username.innerText = data.login;
+  cardInfo.appendChild(username);
+  const location = document.createElement('p');
+  location.innerText = `Location: ${data.location}`;
+  cardInfo.appendChild(location);
+  const profile = document.createElement('p');
+  profile.innerText = "Profile: ";
+  const profileLink = document.createElement('a');
+  profileLink.href=data.html_url;
+  profileLink.innerText=data.html_url;
+  profile.appendChild(profileLink);
+  cardInfo.appendChild(profile);
+  const followers = document.createElement('p');
+  followers.innerText = `Followers: ${data.followers}`;
+  cardInfo.appendChild(followers);
+  const following = document.createElement('p');
+  following.innerText = `Following: ${data.following}`;
+  cardInfo.appendChild(following);
+  return card;
 }
 /*
   STEP 4: Pass the data received from Github into your function,
@@ -70,6 +73,12 @@ function buildCard(data) {
 
 const followersArray = [];
 
+function getFollowers(username) {
+  axios.get(`https://api.github.com/users/${username}/followers`).then(r=>r.data.forEach(f=>newCard(f.login)));
+}
+getFollowers('kevinstonge');
+
+["tetondan","dustinmyers","justsml","luishrd","bigknell"].forEach(u=>newCard(u));
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
     Using DOM methods and properties, create and return the following markup:
